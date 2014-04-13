@@ -13,7 +13,7 @@ Carnivore.configure do
       msg.merge!(:woodchuck => true)
       payload = Fission::Utils.new_payload(:woodchuck, msg)
 
-      Fission::Utils.transmit[:woodchuck].transmit(:woodchuck, payload)
+      Fission::Utils.transmit(:woodchuck, payload)
     end
   end
 end
