@@ -10,6 +10,6 @@ Gem::Specification.new do |s|
   s.description = 'Fission Log Generator'
   s.require_path = 'lib'
   s.add_dependency 'fission'
-  s.add_dependency 'carnivore-file'
+  s.add_dependency 'carnivore-files'
   s.files = Dir['**/*']
 end

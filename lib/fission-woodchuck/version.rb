@@ -1,5 +1,5 @@
 module Fission
-  module Log
+  module Woodchuck
     class Version < Gem::Version
     end
     VERSION = Version.new('0.1.0')
