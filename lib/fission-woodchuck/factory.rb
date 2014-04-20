@@ -10,8 +10,8 @@ Carnivore.configure do
       # msg -> {:path, :content}
       opts = Carnivore::Config.get(:fission, :woodchuck, :paths, msg[:path]) || {}
       msg[:message].merge!(:tags => opts[:tags]) if opts[:tags]
-      payload = Fission::Utils.new_payload(:woodchuck, msg[:message])
       processor = Carnivore::Config.get(:fission, :woodchuck, :processor)
+      payload = Fission::Utils.new_payload(processor, :woodchuck => msg[:message])
       if(processor)
         begin
           Fission::Utils.transmit(processor, payload)
