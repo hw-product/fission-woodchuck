@@ -9,9 +9,18 @@ Carnivore.configure do
     ).add_callback(:chucking) do |msg|
       # msg -> {:path, :content}
       opts = Carnivore::Config.get(:fission, :woodchuck, :paths, msg[:path]) || {}
-      msg[:message].merge!(:tags => opts[:tags]) if opts[:tags]
+      node_name = Carnivore::Config.get(:fission, :woodchuck, :node_name) ||
+        %x{dnsdomainname -f}.to_s.strip
+      unless(node_name && !node_name.empty?)
+        require 'resolv'
+        names = Resolv.getnames('127.0.0.1')
+        node_name = names.detect{|n|n.include?('.')} || names.first
+      end
+      entry = msg[:message].merge(:timestamp => Time.now.to_f)
+      entry.merge!(:tags => opts[:tags]) if opts[:tags]
+      entry.merge!(:source => node_name)
       processor = Carnivore::Config.get(:fission, :woodchuck, :processor)
-      payload = Fission::Utils.new_payload(processor, :woodchuck => msg[:message])
+      payload = Fission::Utils.new_payload(processor, :woodchuck => {:entry => entry})
       if(processor)
         begin
           Fission::Utils.transmit(processor, payload)
