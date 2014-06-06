@@ -1,5 +1,7 @@
 require 'carnivore-files'
 
+# Start up watchers on defined files within configuration.
+# @config fission.woodchuck.paths
 Carnivore.configure do
   paths = Carnivore::Config.get(:fission, :woodchuck, :paths)
   [(paths.is_a?(Hash) ? paths.keys : paths)].flatten.compact.each do |path|
@@ -16,10 +18,11 @@ Carnivore.configure do
         names = Resolv.getnames('127.0.0.1')
         node_name = names.detect{|n|n.include?('.')} || names.first
       end
-      entry = msg[:message].merge(:timestamp => Time.now.to_f)
+      entry = msg[:message].to_smash
+      entry.merge!(:timestamp => Time.now.to_f)
       entry.merge!(:tags => opts[:tags]) if opts[:tags]
       entry.merge!(:source => node_name)
-      processor = Carnivore::Config.get(:fission, :woodchuck, :processor)
+      processor = Carnivore::Config.get(:fission, :woodchuck, :processor) || :woodchuck
       payload = Fission::Utils.new_payload(processor, :woodchuck => {:entry => entry})
       if(processor)
         begin
