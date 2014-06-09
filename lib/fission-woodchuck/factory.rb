@@ -20,7 +20,7 @@ Carnivore.configure do
       end
       entry = msg[:message].to_smash
       entry.merge!(:timestamp => Time.now.to_f)
-      entry.merge!(:tags => opts[:tags]) if opts[:tags]
+      entry.merge!(:tags => opts[:tags] || [])
       entry.merge!(:source => node_name)
       processor = Carnivore::Config.get(:fission, :woodchuck, :processor) || :woodchuck
       payload = Fission::Utils.new_payload(processor, :woodchuck => {:entry => entry})
