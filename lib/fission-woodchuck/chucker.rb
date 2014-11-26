@@ -40,6 +40,7 @@ module Fission
             job_completed(:woodchuck, payload, message)
           else
             destination = filters.shift
+            payload.set(:data, :woodchuck, :filters, filters)
             transmit(destination, payload)
             message.confirm!
           end
@@ -50,12 +51,13 @@ module Fission
       #
       # @param payload [Hash]
       def store!(payload)
-        Fission::Data::LogEntry.add(
+        Fission::Data::Models::LogEntry.add(
           :log => payload.get(:data, :woodchuck, :entry, :path),
           :entry => payload.get(:data, :woodchuck, :entry, :content),
           :timestamp => payload.get(:data, :woodchuck, :entry, :timestamp),
           :tags => payload.get(:data, :woodchuck, :entry, :tags),
-          :source => payload.get(:data, :woodchuck, :entry, :source)
+          :source => payload.get(:data, :woodchuck, :entry, :source),
+          :account_id => payload.fetch(:data, :account, :id, 1)
         )
       end
 
