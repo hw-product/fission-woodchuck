@@ -6,7 +6,7 @@ Carnivore.configure do
   paths = Carnivore::Config.get(:fission, :woodchuck, :paths)
   [(paths.is_a?(Hash) ? paths.keys : paths)].flatten.compact.each do |path|
     Carnivore::Source.build(
-      :type => :file,
+      :type => :carn_file,
       :args => {:path => path, :name => "woodchuck_#{path.tr('/', '_')}"}
     ).add_callback(:chucking) do |msg|
       # msg -> {:path, :content}
