@@ -7,6 +7,12 @@ module Fission
       def setup(*_)
         if(enabled?(:data))
           require 'fission-data/init'
+          require 'time'
+          every(
+            Time.parse(Carnivore::Config.get(:fission, :woodchuck, :prune_hour))+(rand*1000)){
+            ::Fission::Data::Models::LogEntry.
+            where("created_at < :yesterday", {:yesterday => (Time.now - (60*60*24))}).destroy_all
+          }
         else
           abort 'Data library is _required_ for woodchuck functionality'
         end
