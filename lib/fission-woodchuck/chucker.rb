@@ -8,11 +8,14 @@ module Fission
         if(enabled?(:data))
           require 'fission-data/init'
           require 'time'
-          every(
-            Carnivore::Config.get(:fission, :woodchuck, :prune_interval)+(rand*1000)){
-            ::Fission::Data::Models::LogEntry.
-            where("created_at < :yesterday", {:yesterday => (Time.now - (60*60*24))}).destroy_all
-          }
+          interval = Carnivore::Config.fetch(:fission, :woodchuck, :prune, :interval, 86400) + (rand * 1000)
+          prune_before = Carnivore::Config.fetch(:fission, :woodchuck, :prune, :entry_lifetime, 86400)
+          every(interval) do
+            Fission::Data::Models::LogEntry.where(
+              'created_at < :prune_before',
+              :prune_before => Time.now - prune_before
+            ).destroy_all
+          end
         else
           abort 'Data library is _required_ for woodchuck functionality'
         end
