@@ -9,7 +9,7 @@ module Fission
           require 'fission-data/init'
           require 'time'
           interval = (Carnivore::Config.get(:fission, :woodchuck, :prune, :interval) || 86400) + (rand * 1000)
-          prune_before = (Carnivore::Config.get(:fission, :woodchuck, :prune, :entry_lifetime) || 86400
+          prune_before = Carnivore::Config.get(:fission, :woodchuck, :prune, :entry_lifetime) || 86400
           every(interval) do
             Fission::Data::Models::LogEntry.where(
               'created_at < :prune_before',
