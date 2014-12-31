@@ -14,7 +14,7 @@ module Fission
             Fission::Data::Models::LogEntry.where(
               'created_at < :prune_before',
               :prune_before => Time.now - prune_before
-            ).destroy_all
+            ).destroy
           end
         else
           abort 'Data library is _required_ for woodchuck functionality'
